@@ -60,7 +60,8 @@ seen_path = Path("seen.json")
 seen = set()
 if seen_path.exists():
     with open(seen_path, "r") as f:
-        seen = set(json.load(f))
+        seen_list = json.load(f)
+        seen = set(tuple(item) for item in seen_list)
 
 
 def fetch_data():
@@ -76,6 +77,7 @@ def fetch_data():
     soup = BeautifulSoup(html, "html.parser")
 
     new_appointments = []
+    seen_this_time = set()
  
     for box in soup.select(".js_dogodekBox.dogodek"):
         # Get the date from span.js_dateDiff
@@ -92,10 +94,12 @@ def fetch_data():
                 break
 
         entry = (date, time)
+        # print(entry)
         if entry not in seen:
-            seen.add(entry)
+            seen_this_time.add(entry)
             new_appointments.append(entry)
 
+    seen.update(seen_this_time)
     return new_appointments
 
 
@@ -107,14 +111,12 @@ def main():
         # print("\n🆕 New appointments found:")
         # for date, time_val in new:
         #     print(f"📅 {date} ob 🕒 {time_val}")
-        send_notification("New appointments found:\n\n" + "\n".join([f"{date} at {time_val}" for date, time_val in new]))
+        send_notification("New appointments found:\n\n```" + "\n".join([f"{date} at {time_val}" for (date, time_val) in new]) + "```")
     else:
         send_notification("No new appointments found.")
         pass
-        # print("No new appointments.")
     with open("seen.json", "w") as f:
-        json.dump(list(seen.union(new)), f)
-    # time.sleep(15)  # Wait for 5 minutes
+        json.dump(list(seen), f)
 
 if __name__ == "__main__":
     main()
