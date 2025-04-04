@@ -1,0 +1,24 @@
+name: Check Appointments
+
+on:
+  schedule:
+    - cron: "*/1 * * * *"  # every 5 minutes
+  workflow_dispatch:       # allows manual runs too
+
+jobs:
+  run-scraper:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run scraper
+        run: python check_appointments.py

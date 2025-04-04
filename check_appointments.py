@@ -1,6 +1,38 @@
+# import os
 import time
 import requests
 from bs4 import BeautifulSoup
+
+
+WEBHOOK_URL = "https://discord.com/api/webhooks/1357845564770750585/UcDO_Ivzeo1E4CnBhtfQfIH8S9ZYOISQW8Di-hzOH5lIeE0Dt1vYkQOHX3xV6SsLZi-b"
+
+def send_notification(message):
+    data = {
+        "content": message
+    }
+    response = requests.post(WEBHOOK_URL, json=data)
+    if response.status_code == 204:
+        print("✅ Message sent to Discord.")
+    else:
+        print("❌ Error:", response.text)
+
+
+# BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+# CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
+
+# def send_telegram(message):
+#     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+#     payload = {"chat_id": CHAT_ID, "text": message}
+#     requests.post(url, data=payload)
+
+
+# MTM1Nzg0MDIzODA0MjY4MTQ0NA.G0R3kJ.225Yzh-YszwATPwJOaoOmWTlIvNK4QMkme7WcI
+
+# moj discord token od bota
+
+# webhook url
+
+# https://discord.com/api/webhooks/1357845564770750585/UcDO_Ivzeo1E4CnBhtfQfIH8S9ZYOISQW8Di-hzOH5lIeE0Dt1vYkQOHX3xV6SsLZi-b
 
 url = "https://e-uprava.gov.si/si/javne-evidence/prosti-termini/content/singleton.html"
 params = {
@@ -59,17 +91,20 @@ def fetch_data():
 
 
 def main():
-    print("Starting appointment checker...")
-    while True:
-        new = fetch_data()
-        if new:
-            print("\n🆕 New appointments found:")
-            for date, time_val in new:
-                print(f"📅 {date} ob 🕒 {time_val}")
-        else:
-            print("No new appointments.")
+    # print("Starting appointment checker...")
+    # while True:
+    new = fetch_data()
+    if new:
+        # print("\n🆕 New appointments found:")
+        # for date, time_val in new:
+        #     print(f"📅 {date} ob 🕒 {time_val}")
+        send_notification("🆕 New appointments found:\n" + "\n".join([f"📅 {date} at 🕒 {time_val}" for date, time_val in new]))
+    else:
+        send_notification("No new appointments found.")
+        pass
+        # print("No new appointments.")
 
-        time.sleep(10)  # Wait for 5 minutes
+    # time.sleep(15)  # Wait for 5 minutes
 
 if __name__ == "__main__":
     main()
