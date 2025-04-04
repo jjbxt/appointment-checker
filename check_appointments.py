@@ -107,7 +107,7 @@ def main():
         # print("\n🆕 New appointments found:")
         # for date, time_val in new:
         #     print(f"📅 {date} ob 🕒 {time_val}")
-        send_notification("New appointments found:\n" + "\n".join([f"{date} at {time_val}" for date, time_val in new]))
+        send_notification("New appointments found:\n\n" + "\n".join([f"{date} at {time_val}" for date, time_val in new]))
     else:
         send_notification("No new appointments found.")
         pass
