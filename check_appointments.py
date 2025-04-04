@@ -1,7 +1,9 @@
 # import os
-import time
+import json
+from pathlib import Path
 import requests
 from bs4 import BeautifulSoup
+
 
 
 WEBHOOK_URL = "https://discord.com/api/webhooks/1357845564770750585/UcDO_Ivzeo1E4CnBhtfQfIH8S9ZYOISQW8Di-hzOH5lIeE0Dt1vYkQOHX3xV6SsLZi-b"
@@ -52,7 +54,14 @@ headers = {
     "User-Agent": "Mozilla/5.0"
 }
 
+
+seen_path = Path("seen.json")
+
 seen = set()
+if seen_path.exists():
+    with open(seen_path, "r") as f:
+        seen = set(json.load(f))
+
 
 def fetch_data():
     try:
@@ -98,12 +107,13 @@ def main():
         # print("\n🆕 New appointments found:")
         # for date, time_val in new:
         #     print(f"📅 {date} ob 🕒 {time_val}")
-        send_notification("🆕 New appointments found:\n" + "\n".join([f"📅 {date} at 🕒 {time_val}" for date, time_val in new]))
+        send_notification("New appointments found:\n" + "\n".join([f"{date} at {time_val}" for date, time_val in new]))
     else:
         send_notification("No new appointments found.")
         pass
         # print("No new appointments.")
-
+    with open("seen.json", "w") as f:
+        json.dump(list(seen.union(new)), f)
     # time.sleep(15)  # Wait for 5 minutes
 
 if __name__ == "__main__":

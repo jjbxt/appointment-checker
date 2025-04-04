@@ -3,21 +3,35 @@ name: Check Appointments
 on:
   schedule:
     - cron: "*/5 * * * *"  # every 5 minutes
+  workflow_dispatch:  # allows manual triggering of the workflow
 
 jobs:
-  run-scraper:
+  check:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+    - name: Checkout repo
+      uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
+    - name: Download last seen.json
+      uses: actions/download-artifact@v4
+      with:
+        name: seen-data
+        path: .
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
 
-      - name: Run scraper
-        run: python check_appointments.py
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+
+    - name: Run scraper
+      run: python check_appointments.py
+
+    - name: Upload updated seen.json
+      uses: actions/upload-artifact@v4
+      with:
+        name: seen-data
+        path: seen.json
