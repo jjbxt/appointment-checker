@@ -55,7 +55,8 @@ headers = {
 }
 
 
-seen_path = Path("seen.json")
+seen_path = Path(".cache/seen.json")
+seen_path.parent.mkdir(exist_ok=True)
 
 seen = set()
 if seen_path.exists():
@@ -115,7 +116,7 @@ def main():
     else:
         send_notification("No new appointments found.")
         pass
-    with open("seen.json", "w") as f:
+    with open(seen_path, "w") as f:
         json.dump(list(seen), f)
 
 if __name__ == "__main__":

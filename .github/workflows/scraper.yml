@@ -2,39 +2,37 @@ name: Check Appointments
 
 on:
   schedule:
-    - cron: "*/5 * * * *"  # every 5 minutes
-  workflow_dispatch:  # allows manual triggering of the workflow
+    - cron: "*/5 * * * *"  # Every 5 minutes
+  workflow_dispatch:
 
 jobs:
   check:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
-    - name: Download last seen.json
-      uses: actions/download-artifact@v4
-      with:
-        name: seen-data
-        path: .
-      continue-on-error: true
+      - name: Restore cache
+        uses: actions/cache@v3
+        with:
+          path: .cache
+          key: seen-data-cache
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.x'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
 
-    - name: Install dependencies
-      run: pip install -r requirements.txt
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
-    - name: Run scraper
-      run: python check_appointments.py
+      - name: Run scraper
+        run: python check_appointments.py
 
-    - name: Upload updated seen.json
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: seen-data
-        path: seen.json
-        retention-days: 1
+      - name: Save updated cache
+        if: always()
+        uses: actions/cache/save@v3
+        with:
+          path: .cache
+          key: seen-data-cache
