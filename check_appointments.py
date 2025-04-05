@@ -4,7 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 
 
-WEBHOOK_URL = "https://discord.com/api/webhooks/1357845564770750585/UcDO_Ivzeo1E4CnBhtfQfIH8S9ZYOISQW8Di-hzOH5lIeE0Dt1vYkQOHX3xV6SsLZi-b"
+WEBHOOK_URL = "https://discord.com/api/webhooks/1357869711412695221/A1clcbLCvI5oz7uliKcnHrZ1KiaY6bvn4vJFhW4i4L3_fFLqTWV_VekDN5OSSUwiMhvQ"
 
 URL = "https://e-uprava.gov.si/si/javne-evidence/prosti-termini/content/singleton.html"
 PARAMS = {
