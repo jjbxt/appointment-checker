@@ -37,4 +37,3 @@ jobs:
         with:
           path: .cache/seen.json
           key: seen-data-cache-${{ github.run_id }}
-          retention-days: 1
