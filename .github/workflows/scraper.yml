@@ -16,8 +16,9 @@ jobs:
       - name: Restore cache
         uses: actions/cache@v3
         with:
-          path: .cache
-          key: seen-data-cache
+          path: .cache/seen.json
+          key: seen-data-cache-${{ github.run_id }}
+          restore-keys: seen-data-cache-
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -32,7 +33,8 @@ jobs:
 
       - name: Save updated cache
         if: always()
-        uses: actions/cache/save@v3
+        uses: actions/cache@v3
         with:
-          path: .cache
-          key: seen-data-cache
+          path: .cache/seen.json
+          key: seen-data-cache-${{ github.run_id }}
+          retention-days: 1
