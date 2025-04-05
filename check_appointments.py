@@ -1,43 +1,13 @@
-# import os
 import json
 from pathlib import Path
 import requests
 from bs4 import BeautifulSoup
 
 
-
 WEBHOOK_URL = "https://discord.com/api/webhooks/1357845564770750585/UcDO_Ivzeo1E4CnBhtfQfIH8S9ZYOISQW8Di-hzOH5lIeE0Dt1vYkQOHX3xV6SsLZi-b"
 
-def send_notification(message):
-    data = {
-        "content": message
-    }
-    response = requests.post(WEBHOOK_URL, json=data)
-    if response.status_code == 204:
-        print("✅ Message sent to Discord.")
-    else:
-        print("❌ Error:", response.text)
-
-
-# BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-# CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
-
-# def send_telegram(message):
-#     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-#     payload = {"chat_id": CHAT_ID, "text": message}
-#     requests.post(url, data=payload)
-
-
-# MTM1Nzg0MDIzODA0MjY4MTQ0NA.G0R3kJ.225Yzh-YszwATPwJOaoOmWTlIvNK4QMkme7WcI
-
-# moj discord token od bota
-
-# webhook url
-
-# https://discord.com/api/webhooks/1357845564770750585/UcDO_Ivzeo1E4CnBhtfQfIH8S9ZYOISQW8Di-hzOH5lIeE0Dt1vYkQOHX3xV6SsLZi-b
-
-url = "https://e-uprava.gov.si/si/javne-evidence/prosti-termini/content/singleton.html"
-params = {
+URL = "https://e-uprava.gov.si/si/javne-evidence/prosti-termini/content/singleton.html"
+PARAMS = {
     "lang": "si",
     "type": "1",
     "cat": "6",
@@ -50,24 +20,25 @@ params = {
     "complete": "true",
     "page": "10"
 }
-headers = {
+HEADERS = {
     "User-Agent": "Mozilla/5.0"
 }
 
 
-seen_path = Path(".cache/seen.json")
-seen_path.parent.mkdir(exist_ok=True)
+def send_notification(message):
+    data = {
+        "content": message
+    }
+    response = requests.post(WEBHOOK_URL, json=data)
+    if response.status_code == 204:
+        print("✅ Message sent to Discord.")
+    else:
+        print("❌ Error:", response.text)
 
-seen = set()
-if seen_path.exists():
-    with open(seen_path, "r") as f:
-        seen_list = json.load(f)
-        seen = set(tuple(item) for item in seen_list)
 
-
-def fetch_data():
+def fetch_data(seen):
     try:
-        response = requests.get(url, headers=headers, params=params)
+        response = requests.get(URL, headers=HEADERS, params=PARAMS)
         response.raise_for_status()  # Raise an error for bad responses
     except requests.RequestException as e:
         print(f"Error fetching data: {e}")
@@ -105,19 +76,20 @@ def fetch_data():
 
 
 def main():
-    # print("Starting appointment checker...")
-    # while True:
-    new = fetch_data()
+    seen_path = Path(".cache/seen.json")
+    seen_path.parent.mkdir(exist_ok=True)
+
+    seen = set()
+    if seen_path.exists():
+        with open(seen_path, "r") as f:
+            seen_list = json.load(f)
+            seen = set(tuple(item) for item in seen_list)
+
+    new = fetch_data(seen)
     if new:
-        # print("\n🆕 New appointments found:")
-        # for date, time_val in new:
-        #     print(f"📅 {date} ob 🕒 {time_val}")
         send_notification("New appointments found:\n\n```" + "\n".join([f"{date} at {time_val}" for (date, time_val) in new]) + "```")
-    else:
-        send_notification("No new appointments found.")
-        pass
-    with open(seen_path, "w") as f:
-        json.dump(list(seen), f)
+        with open(seen_path, "w") as f:
+            json.dump(list(seen), f)
 
 if __name__ == "__main__":
     main()
