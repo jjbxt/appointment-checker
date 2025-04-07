@@ -2,7 +2,11 @@ import json
 from pathlib import Path
 import requests
 from bs4 import BeautifulSoup
+from datetime import datetime
 
+
+DEADLINE = "20. 5. 2025"
+TILL_DATE = datetime.strptime(DEADLINE, "%d. %m. %Y").date()
 
 WEBHOOK_URL = "https://discord.com/api/webhooks/1357869711412695221/A1clcbLCvI5oz7uliKcnHrZ1KiaY6bvn4vJFhW4i4L3_fFLqTWV_VekDN5OSSUwiMhvQ"
 
@@ -36,6 +40,10 @@ def send_notification(message):
         print("❌ Error:", response.text)
 
 
+def too_late(entry):
+    return datetime.strptime(entry[0], "%d. %m. %Y").date() > TILL_DATE
+
+
 def fetch_data(seen):
     try:
         response = requests.get(URL, headers=HEADERS, params=PARAMS)
@@ -66,6 +74,8 @@ def fetch_data(seen):
                 break
 
         entry = (date, time)
+        if too_late(entry):
+            continue
         seen_this_time.add(entry)
         if entry not in seen:
             new_appointments.append(entry)
