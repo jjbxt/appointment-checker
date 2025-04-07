@@ -66,13 +66,11 @@ def fetch_data(seen):
                 break
 
         entry = (date, time)
-        # print(entry)
+        seen_this_time.add(entry)
         if entry not in seen:
-            seen_this_time.add(entry)
             new_appointments.append(entry)
 
-    seen.update(seen_this_time)
-    return new_appointments
+    return new_appointments, seen_this_time
 
 
 def main():
@@ -85,7 +83,7 @@ def main():
             seen_list = json.load(f)
             seen = set(tuple(item) for item in seen_list)
 
-    new = fetch_data(seen)
+    new, seen = fetch_data(seen)
     if new:
         send_notification("New appointments found:\n\n```" + "\n".join([f"{date} at {time_val}" for (date, time_val) in new]) + "```")
         with open(seen_path, "w") as f:
