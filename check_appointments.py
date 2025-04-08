@@ -30,10 +30,14 @@ HEADERS = {
 
 
 def send_notification(message):
-    data = {
-        "content": message
-    }
-    response = requests.post(WEBHOOK_URL, json=data)
+    webhook_url = os.getenv("WEBHOOK_URL")
+    if not webhook_url:
+        print("❌ Webhook URL not found in environment.")
+        return
+
+    data = {"content": message}
+    response = requests.post(webhook_url, json=data)
+
     if response.status_code == 204:
         print("✅ Message sent to Discord.")
     else:
