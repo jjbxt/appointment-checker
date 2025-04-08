@@ -8,7 +8,9 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
-
+    env:
+      WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+      
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
