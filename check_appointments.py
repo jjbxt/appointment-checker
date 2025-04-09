@@ -101,6 +101,8 @@ def main():
         send_notification("New appointments found:\n\n```" + "\n".join([f"{date} at {time_val}" for (date, time_val) in new]) + "```")
         with open(seen_path, "w") as f:
             json.dump(list(seen), f)
+    else:
+        send_notification("Just cheking if it works now ...")
 
 if __name__ == "__main__":
     main()
