@@ -8,8 +8,6 @@ from datetime import datetime
 DEADLINE = "20. 5. 2025"
 TILL_DATE = datetime.strptime(DEADLINE, "%d. %m. %Y").date()
 
-WEBHOOK_URL = "https://discord.com/api/webhooks/1357869711412695221/A1clcbLCvI5oz7uliKcnHrZ1KiaY6bvn4vJFhW4i4L3_fFLqTWV_VekDN5OSSUwiMhvQ"
-
 URL = "https://e-uprava.gov.si/si/javne-evidence/prosti-termini/content/singleton.html"
 PARAMS = {
     "lang": "si",
