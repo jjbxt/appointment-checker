@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 
 
-DEADLINE = "20. 5. 2025"
+DEADLINE = "20. 5. 2027"
 TILL_DATE = datetime.strptime(DEADLINE, "%d. %m. %Y").date()
 
 URL = "https://e-uprava.gov.si/si/javne-evidence/prosti-termini/content/singleton.html"
